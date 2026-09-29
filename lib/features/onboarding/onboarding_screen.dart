@@ -2,6 +2,7 @@ import 'package:evently/core/utils/app_assets.dart';
 import 'package:evently/core/utils/app_colors.dart';
 import 'package:evently/core/widgets/prime_widget.dart';
 import 'package:evently/core/widgets/shared_button.dart';
+import 'package:evently/features/login/login_screen.dart';
 import 'package:evently/features/onboarding/theme_widget.dart';
 import 'package:evently/l10n/app_localizations.dart';
 import 'package:evently/provider/app_language_provider.dart';
@@ -113,7 +114,9 @@ class OnboardingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 40,),
 
-              SharedButton(text:local.letsStart,style: theme.textTheme.titleLarge,color: isLight? AppColors.primary : AppColors.primaryDark, )
+              SharedButton(text:local.letsStart,style: theme.textTheme.titleLarge,color: isLight? AppColors.primary : AppColors.primaryDark,onTap: (){
+                Navigator.pushNamed(context, LoginScreen.routeName);
+              }, )
             ]
                 ),
         ),
