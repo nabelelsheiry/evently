@@ -1,4 +1,8 @@
 import 'package:evently/core/utils/app_theme.dart';
+import 'package:evently/features/forget_password/forget_password_screen.dart';
+import 'package:evently/features/home/home_screen.dart';
+import 'package:evently/features/login/login_screen.dart';
+import 'package:evently/features/register/register_screen.dart';
 import 'package:evently/features/onboarding/onboarding_screen.dart';
 import 'package:evently/features/splash/splash_screen.dart';
 import 'package:evently/l10n/app_localizations.dart';
@@ -20,7 +24,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    var langProvider= Provider.of<AppLanguageProvider>(context)!;
+    var langProvider = Provider.of<AppLanguageProvider>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: AppTheme.darkTheme,
@@ -31,6 +35,10 @@ class MyApp extends StatelessWidget {
       routes: {
         SplashScreen.routeName: (_) => SplashScreen(),
         OnboardingScreen.routeName: (_) => OnboardingScreen(),
+        HomeScreen.routeName: (_) => HomeScreen(),
+        LoginScreen.routeName: (_) => LoginScreen(),
+        RegisterScreen.routeName: (_) => const RegisterScreen(),
+        ForgetPasswordScreen.routeName: (_) => const ForgetPasswordScreen(),
       },
       locale: Locale(langProvider.language),
       localizationsDelegates: [

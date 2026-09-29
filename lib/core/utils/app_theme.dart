@@ -11,6 +11,11 @@ abstract final class AppTheme {
         fontWeight: FontWeight.w600,
         color: AppColors.black,
       ),
+      headlineLarge: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: AppColors.primary,
+      ),
       titleLarge:  TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.w500,
@@ -32,8 +37,7 @@ abstract final class AppTheme {
         color: AppColors.primary,
       ),
 
-
-    )
+    ),
 
   );
   static  ThemeData darkTheme= ThemeData(
@@ -42,6 +46,11 @@ abstract final class AppTheme {
     textTheme: const TextTheme(
       titleMedium:  TextStyle(
         fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: AppColors.white,
+      ),
+      headlineLarge: TextStyle(
+        fontSize: 24,
         fontWeight: FontWeight.w600,
         color: AppColors.white,
       ),

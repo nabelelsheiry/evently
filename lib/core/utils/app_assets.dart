@@ -22,4 +22,7 @@ abstract final class AppAssets {
   static const String icnSunLight ="${_iconRoute}icn_sun_light.png";
   static const String icnMoonLight ="${_iconRoute}icn_moon_light.png";
   static const String moon ="${_iconRoute}moon.png";
+  static const String home ="${_iconRoute}home.png";
+  static const String favourite ="${_iconRoute}favourite.png";
+  static const String profile ="${_iconRoute}profile.png";
 }
