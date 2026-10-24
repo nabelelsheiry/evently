@@ -3,9 +3,12 @@ import 'package:evently/core/utils/app_colors.dart';
 import 'package:evently/core/widgets/custom_outlined_button.dart';
 import 'package:evently/core/widgets/custom_text_form_field.dart';
 import 'package:evently/features/forget_password/forget_password_screen.dart';
+import 'package:evently/features/home/home_screen.dart';
 import 'package:evently/features/register/register_screen.dart';
 import 'package:evently/provider/app_language_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,14 +21,68 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final _emailController = TextEditingController(text: "elbono@gmail.com");
+  final _passwordController = TextEditingController(text: "elbono1234");
   bool _isObscure = true;
+  bool _isLoading = false;
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
-      String email = _emailController.text;
-      String password = _passwordController.text;
+      setState(() {
+        _isLoading = true;
+      });
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        );
+
+        if (mounted) {
+          Fluttertoast.showToast(
+            msg: "Logged in successfully!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+          Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+        }
+      } on FirebaseAuthException catch (e) {
+        String message = "Login failed. Please try again.";
+        if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
+          message = 'No user found for that email or invalid credentials.';
+        } else if (e.code == 'wrong-password') {
+          message = 'Wrong password provided for that user.';
+        } else if (e.code == 'invalid-email') {
+          message = 'The email address is invalid.';
+        } else if (e.message != null && e.message!.isNotEmpty) {
+          message = e.message!;
+        }
+        Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } catch (e) {
+        Fluttertoast.showToast(
+          msg: "An error occurred. Please check your internet connection.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
     }
   }
 
@@ -82,12 +139,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   CustomTextFormField(
+                    obscureText: false,
                     controller: _emailController,
                     hintText: "Enter your email",
                     prefixIcon: Icons.email_outlined,
-                    isDark: isDark,
-                    primaryColor: primaryColor,
-                    inputTextColor: inputTextColor,
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Please enter your email';
@@ -106,9 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: "Enter your password",
                     prefixIcon: Icons.lock_outline,
                     obscureText: _isObscure,
-                    isDark: isDark,
-                    primaryColor: primaryColor,
-                    inputTextColor: inputTextColor,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isObscure
@@ -156,21 +208,25 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: _login,
+                      onPressed: _isLoading ? null : _login,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          color: AppColors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: AppColors.white,
+                            )
+                          : const Text(
+                              "Login",
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                     ),
                   ),
                   const SizedBox(height: 24),

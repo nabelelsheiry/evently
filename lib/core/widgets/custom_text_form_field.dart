@@ -3,55 +3,43 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final TextEditingController controller;
-  final String hintText;
-  final IconData prefixIcon;
-  final bool isDark;
-  final Color primaryColor;
-  final Color inputTextColor;
   final bool obscureText;
+  final String hintText;
+  final IconData? prefixIcon;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
 
   const CustomTextFormField({
     super.key,
-    required this.controller,
     required this.hintText,
-    required this.prefixIcon,
-    required this.isDark,
-    required this.primaryColor,
-    required this.inputTextColor,
-    this.obscureText = false,
-    this.suffixIcon,
-    this.validator,
+    this.prefixIcon,
+    this.suffixIcon, this.validator, required this.controller, required this.obscureText,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      style: const TextStyle(color: AppColors.black),
       obscureText: obscureText,
-      style: TextStyle(color: inputTextColor),
-      validator: validator,
       decoration: InputDecoration(
         filled: true,
-        fillColor: isDark ? Colors.transparent : AppColors.white,
+        fillColor: AppColors.white,
         hintText: hintText,
         hintStyle: const TextStyle(color: AppColors.grey),
-        prefixIcon: Icon(prefixIcon, color: AppColors.grey),
+        prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: AppColors.grey) : null,
         suffixIcon: suffixIcon,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: isDark
-              ? const BorderSide(
-            color: AppColors.primary,
-            width: 1.5,
-          )
-              : BorderSide.none,
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 1.0,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
-            color: primaryColor,
+          borderSide: const BorderSide(
+            color: AppColors.primary,
             width: 2.0,
           ),
         ),
@@ -70,6 +58,7 @@ class CustomTextFormField extends StatelessWidget {
           ),
         ),
       ),
+      validator: validator,
     );
   }
 }

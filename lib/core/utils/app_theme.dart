@@ -36,6 +36,11 @@ abstract final class AppTheme {
         fontWeight: FontWeight.w500,
         color: AppColors.primary,
       ),
+      bodySmall: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: AppColors.grey,
+      ),
 
     ),
 
@@ -73,6 +78,11 @@ abstract final class AppTheme {
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: AppColors.white,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: AppColors.grey,
       ),
 
 

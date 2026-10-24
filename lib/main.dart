@@ -5,13 +5,19 @@ import 'package:evently/features/login/login_screen.dart';
 import 'package:evently/features/register/register_screen.dart';
 import 'package:evently/features/onboarding/onboarding_screen.dart';
 import 'package:evently/features/splash/splash_screen.dart';
+import 'package:evently/firebase_options.dart';
 import 'package:evently/l10n/app_localizations.dart';
 import 'package:evently/provider/app_language_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(ChangeNotifierProvider(
       create: (context) => AppLanguageProvider(),
       child: const MyApp()));
@@ -31,7 +37,7 @@ class MyApp extends StatelessWidget {
       themeMode: langProvider.theme == "light" ? ThemeMode.light : ThemeMode.dark,
       // key: ValueKey(langProvider.language),
       theme: AppTheme.theme,
-      initialRoute: SplashScreen.routeName,
+      initialRoute: LoginScreen.routeName,
       routes: {
         SplashScreen.routeName: (_) => SplashScreen(),
         OnboardingScreen.routeName: (_) => OnboardingScreen(),
