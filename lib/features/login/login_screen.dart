@@ -5,6 +5,8 @@ import 'package:evently/core/widgets/custom_text_form_field.dart';
 import 'package:evently/features/forget_password/forget_password_screen.dart';
 import 'package:evently/features/home/home_screen.dart';
 import 'package:evently/features/register/register_screen.dart';
+import 'package:evently/firebase_srevices/firestore_helper/firestoreHelper.dart';
+import 'package:evently/model/User_dm.dart';
 import 'package:evently/provider/app_language_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -84,11 +86,12 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+       var userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
-
+       UserDM user =await getUserFromFirestore(userCredential.user!.uid);
+       print(user.name);
         if (mounted) {
           Fluttertoast.showToast(
             msg: "Logged in successfully!",

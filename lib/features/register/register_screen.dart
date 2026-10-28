@@ -4,6 +4,8 @@ import 'package:evently/core/widgets/custom_outlined_button.dart';
 import 'package:evently/core/widgets/custom_text_form_field.dart';
 import 'package:evently/features/home/home_screen.dart';
 import 'package:evently/features/login/login_screen.dart';
+import 'package:evently/firebase_srevices/firestore_helper/firestoreHelper.dart';
+import 'package:evently/model/User_dm.dart';
 import 'package:evently/provider/app_language_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-
+      createUserInFirestore(UserDM(id: userCredential.user!.uid, email: userCredential.user!.email!, name: _nameController.text.trim(), ));
       if (userCredential.user != null) {
         await userCredential.user!
             .updateDisplayName(_nameController.text.trim());
