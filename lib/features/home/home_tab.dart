@@ -1,17 +1,24 @@
 
 import 'package:evently/features/home/tabbar_widget.dart';
+import 'package:evently/model/category_dm.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/utils/app_colors.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
+  @override
+  State<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
 
     var theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: AppColors.scaf,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -48,38 +55,7 @@ class HomeTab extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 24,),
-                TabBar(
-                  isScrollable: true,
-                  tabAlignment: TabAlignment.start,
-                  dividerColor: Colors.transparent,
-                  // indicatorSize: TabBarIndicatorSize.label,
-                  indicatorPadding: EdgeInsets.zero,
-                  labelPadding: const EdgeInsets.symmetric(horizontal: 4),
-
-                  indicator: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-
-
-                  labelColor: Colors.white,
-                  unselectedLabelColor: AppColors.primary,
-
-                  tabs: [
-                    TabbarWidget(
-                      title: "All",
-                      icon: Icons.grid_view,
-                    ),
-                    TabbarWidget(
-                      title: "Sport",
-                      icon: Icons.directions_bike_outlined,
-                    ),
-                    TabbarWidget(
-                      title: "Birthday",
-                      icon: Icons.cake_outlined,
-                    ),
-                  ],
-                )
+                CategoriesTabBar(categories: CategoryDM.allCategories, onTap: (category){})
               ],
             ),
           ),

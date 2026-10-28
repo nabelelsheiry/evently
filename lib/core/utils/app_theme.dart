@@ -5,6 +5,10 @@ abstract final class AppTheme {
   static  ThemeData theme= ThemeData(
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.white,
+    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.black,
+      onSurface: AppColors.black
+
+    ),
     textTheme: const TextTheme(
       titleMedium:  TextStyle(
         fontSize: 20,
