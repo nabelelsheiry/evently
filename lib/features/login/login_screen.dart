@@ -9,6 +9,7 @@ import 'package:evently/provider/app_language_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,13 +19,64 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
-
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController(text: "elbono@gmail.com");
   final _passwordController = TextEditingController(text: "elbono1234");
   bool _isObscure = true;
   bool _isLoading = false;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+
+  Future<void> _loginWithGoogle() async {
+    try {
+
+      final googleSignIn = GoogleSignIn.instance;
+      await googleSignIn.initialize();
+
+      await googleSignIn.signOut();
+
+
+      final GoogleSignInAccount googleSignInAccount = await googleSignIn.authenticate();
+
+
+      const List<String> scopes = ['email', 'profile'];
+      final clientAuth = await googleSignInAccount.authorizationClient.authorizeScopes(scopes);
+
+
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleSignInAccount.authentication.idToken,
+        accessToken: clientAuth.accessToken,
+      );
+
+      await _firebaseAuth.signInWithCredential(credential);
+
+      if (mounted) {
+        Fluttertoast.showToast(
+          msg: "Logged in successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+
+        Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+      }
+    } catch (e) {
+      print("FULL GOOGLE SIGN IN ERROR: $e");
+      if (mounted) {
+        Fluttertoast.showToast(
+          msg: "Login failed: ${e.toString()}",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    }
+  }
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
@@ -97,11 +149,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var provider = Provider.of<AppLanguageProvider>(context);
-    bool isDark = provider.theme == "dark" || theme.brightness == Brightness.dark;
+    bool isDark =
+        provider.theme == "dark" || theme.brightness == Brightness.dark;
 
     Color primaryColor = isDark ? AppColors.primaryDark : AppColors.primary;
     Color textColor = isDark ? AppColors.white : AppColors.primary;
-    Color inputTextColor = isDark ? AppColors.white : AppColors.black;
 
     return Scaffold(
       backgroundColor: isDark ? AppColors.scaffoldDark2 : AppColors.scaffold,
@@ -119,7 +171,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     tag: "hero",
                     child: Center(
                       child: Image.asset(
-                        isDark ? AppAssets.eventlyLogoDark : AppAssets.eventlyLogo,
+                        isDark
+                            ? AppAssets.eventlyLogoDark
+                            : AppAssets.eventlyLogo,
                         width: 180,
                       ),
                     ),
@@ -189,7 +243,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, ForgetPasswordScreen.routeName);
+                        Navigator.pushNamed(
+                            context, ForgetPasswordScreen.routeName);
                       },
                       child: Text(
                         "Forget Password?",
@@ -217,16 +272,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: _isLoading
                           ? const CircularProgressIndicator(
-                              color: AppColors.white,
-                            )
+                        color: AppColors.white,
+                      )
                           : const Text(
-                              "Login",
-                              style: TextStyle(
-                                color: AppColors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                        "Login",
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -242,7 +297,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, RegisterScreen.routeName);
+                          Navigator.pushNamed(
+                              context, RegisterScreen.routeName);
                         },
                         child: Text(
                           "Signup",
@@ -286,8 +342,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   CustomOutlinedButton(
-                    onPressed: () {},
-                    backgroundColor: isDark ? Colors.transparent : AppColors.white,
+                    onPressed: () {
+                      _loginWithGoogle();
+                    },
+                    backgroundColor:
+                    isDark ? Colors.transparent : AppColors.white,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
